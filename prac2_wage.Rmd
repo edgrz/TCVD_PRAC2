@@ -1,0 +1,100 @@
+---
+title: 'PRAC2 Tipologia i cicle de vida de les dades'
+author: "Autor: Edgar Pardo - Pau Campaña"
+date: "May 2020"
+output:
+  pdf_document:
+    highlight: zenburn
+    toc: yes
+  word_document: default
+  html_document:
+    highlight: default
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(corrplot)
+library(RColorBrewer)
+library(ggplot2)
+library(reshape)
+library(caret)
+library(devtools)
+library(ggbiplot)
+library(dplyr)
+```
+
+## Càrrega de dades
+
+Primer de tot, carreguem el data set. En aquest cas, utilitzarem un dataset que proporciona el propi R Studio anomenat WAGE sobre el càncer de mama a Wisconsin concretament el del diagnòstic.
+
+```{r}
+data(Wage)
+dataset <- Wage
+summary(dataset)
+```
+Si inspeccionem les dades podrem veure el tipus de cadascuna de les variables:
+```{r}
+str(dataset)
+```
+Un cop carregat i assignat el nom de les columnes, és moment de veure la magnitud de les dades.
+
+```{r}
+files = dim(dataset)[1] #files del dataframe
+files
+columnes = dim(dataset)[2] #columnes del dataframe
+columnes
+```
+En total, existeixen 3000 mostres i 11 atributs per cadascuna d'elles.
+
+TIPUS DE DADES
+
+```{r}
+sapply(dataset, function(x) class(x))
+```
+Observem que el tipus de dades assignat per part del propi R a cadascun dels atributs, es correspon amb la pròpia naturalesa i domini d'aquestes.
+
+Tenim un dataframe de 3000 treballadors amb 11 atributs per cadascun d’ells. Els atributs són de tres tipus:
+
+-int -Factor -num
+
+Les variables numèriques són: - year: fa referència a l’any en el qual es va recollir la informació del salari corresponent a aquella fila. - age: edat del treballador en el moment en què es va recollir la informació. - logwage: registre del salari del treballador - wage: salari brut del treballador per 1000 $
+
+Les variables de tipus factor: - maritl: fa referència a l’estat civil del treballador. Pot prendre diversos valors: 1. Never Married 2. Married 3. Widowed 4. Divorced and 5. Separated. - race: fa referència a la raça del treballador. Pot prendre els següents valors: 1. White 2. Black 3. Asian and 4. Other. - education: fa referència al nivell d’estudis del treballador. Pot prendre els següents valors: 1. < HS Grad 2. HS Grad 3. Some College 4. College Grad and 5.Advanced Degree - region: fa referència a la regió on viu el treballador. Només pren un valor: mid-atlantic - jobclass: fa referència al tipus de treball. Pot prendre els següents valors: 1. Industrial and 2. Information. - health: fa referència a l’estat de salut. Pot prendre els següents valors: 1. <=Good and 2. >=Very Good - health_ins: fa referència a si el treballador té sanitat privada o no. Pot prendre els següents valors: 1. Yes and 2. No.
+
+Ara anem a veure si existeixen valors nuls
+```{r}
+colSums(is.na(dataset))
+```
+
+## INSPECCIÓ DE LES DADES
+
+
+#Bibliografia
+
+[1] https://www.rdocumentation.org/packages/ISLR/versions/1.2/topics/Wage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
