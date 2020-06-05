@@ -28,6 +28,8 @@ library(caret)
 library(devtools)
 library(ggbiplot)
 library(dplyr)
+library(ISLR)
+library(nortest)
 ```
 
 ## Càrrega de dades
@@ -75,10 +77,504 @@ colSums(is.na(dataset))
 
 ## INSPECCIÓ DE LES DADES
 
+## Estadística descriptiva i visualització
+
+
+Un cop carregades i inspeccionades les dades és moment de fer una descriptiva numèrica de les dades. Començarem atribut a atribut:
+
+__*year*__
+
+```{r}
+hist(dataset$year, xlab="year", main="Histograma de la variable year", breaks=6)
+summary(dataset$year)
+```
+
+És una variable numèrica discreta on la majoria de tuples es concentren en l'any 2003 (l'any que es van recollir les dades).
+El valor màxim és 2009 i mínim 2003.
+
+
+__*age*__
+```{r}
+library(ggplot2)
+ggplot(mapping= aes(x=dataset$age))+ geom_density()
+boxplot(dataset$age,main="Box plot de age", col="gray")
+summary(dataset$age)
+```
+
+És una variable numèrica podríem dir continua amb valor mínim 18 i valor màxim 80. Els valors es concentren al voltant de l'interval 40-50 anys (mitjana=42.41). Sembla seguir una distribució normal.
+
+__*maritl*__: 
+
+```{r}
+
+
+plot(x = dataset$maritl, main = "Distribució variable maritl",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$maritl)
+slices <- c(table(dataset$maritl))
+lbls <- c("Never Married", "Married", "Widowed", "Divorced","Separated")
+pie(slices, labels = lbls, main="Distribucio poblacio segons maritl")
+```
+
+Variable de tipus factor que pot prendre els cinc valors que es veuen al gràfic circular i explicats en el primer exercici. Observem com la majoria dels treballadors presenten l'estat civil casat.
+
+__*race*__
+
+```{r}
+plot(x = dataset$race, main = "Distribució variable race",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$race)
+slices <- c(table(dataset$race))
+lbls <- c("1. White", "2. Black", "3. Asian", "4. Other")
+pie(slices, labels = lbls, main="Distribucio poblacio segons race")
+```
+
+Variable de tipus factor que pot prendre quatre valors i on la majoria dels treballadors són d'ètnia blanca (2480 persones).
+
+__*education*__
+
+```{r}
+plot(x = dataset$education, main = "Distribució variable race",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$education)
+slices <- c(table(dataset$education))
+lbls <- c("1. < HS Grad", "2. HS Grad", "3. Some College", "4. College Grad", "5. Advanced Degree")
+pie(slices, labels = lbls, main="Distribucio poblacio segons education")
+```
+
+Variable de tipus factor que pot prendre cinc valors. En aquest cas, veiem que la mostra està més distribuïda entre les possibles opcions. El grup que més representat és el de les persones amb *HS Grad*, és a dir amb educació secundària.
+
+__*region*__
+
+```{r}
+plot(x = dataset$region, main = "Distribució variable region",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$region)
+slices <- c(table(dataset$region))
+lbls <- c("2. Middle Atlantic")
+pie(slices, labels = lbls, main="Distribucio poblacio segons region")
+```
+
+Variable de tipus factor on tota la població pertany a una única regió: *Middle Atlantic*.
+
+__*jobclass*__
+
+```{r}
+plot(x = dataset$jobclass, main = "Distribució variable jobclass",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$jobclass)
+slices <- c(table(dataset$jobclass))
+lbls <- c("1. Industrial","2. Information")
+pie(slices, labels = lbls, main="Distribucio poblacio segons jobclass")
+```
+
+Variable de tipus factor que pot prendre dos valors: *industrial* i *information*. Els dos valors prenen quasi el mateix nom de tuples, però hi ha una lleugera diferència (88) en favor de *industrial*.
+
+__*health*__
+
+```{r}
+plot(x = dataset$health, main = "Distribució variable health",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$health)
+slices <- c(table(dataset$health))
+lbls <- c("1. <=Good","2. >=Very Good")
+pie(slices, labels = lbls, main="Distribucio poblacio segons health")
+```
+
+Variable de tipus factor que pot prendre dos valors i  on predominen les persones amb un estat de salut molt bo (2142).
+
+
+__*health_ins*__
+
+```{r}
+plot(x = dataset$health_ins, main = "Distribució variable health_ins",xlab = "Possibles valors", ylab = "Freqüència",col = c("royalblue", "seagreen"))
+table(dataset$health_ins)
+slices <- c(table(dataset$health_ins))
+lbls <- c("1. Yes","2. No")
+pie(slices, labels = lbls, main="Distribucio poblacio segons health_ins")
+```
+
+Variable de tipus factor que pren dos valors i on la majoria de treballadors presenten una assegurança mèdica privada. Concretament 2083 treballadors.
+
+__*logwage*__
+
+```{r}
+ggplot(mapping= aes(x=dataset$logwage))+ geom_density()
+boxplot(dataset$logwage,main="Box plot de logwage", col="gray")
+summary(dataset$logwage)
+```
+
+Variable de tipus numèrica continua on els valors es concentren al voltant de 4.5 i 5 (mitjana = 4.654). El valor màxim d'aquesta variable és 5.763 i el mínim 3. Es mostren també els sis valors resum d'una variable (mínim, màxim, Q1, mediana, mitjana i Q3) per tal de consolidar coneixement.
+
+__*wage*__ 
+
+```{r}
+ggplot(mapping= aes(x=dataset$wage))+ geom_density()
+boxplot(dataset$wage,main="Box plot del sou", col="gray")
+summary(dataset$wage)
+```
+
+Variable continua numèrica amb un sou mitjà de 111.70 ($/1000). El sou mínim recollit en el dataframe és 20.09 i el sou màxim 318.34. Es mostren també els sis valors resum d'una variable (mínim, màxim, Q1, mediana, mitjana i Q3) per tal de consolidar coneixement.
+
+
+### Valors extrems
+
+
+```{r}
+x <- melt(dataset)
+plt <- ggplot(data = x, aes(x = variable, y = value))
+plt + geom_boxplot() + theme_minimal() + labs(x = "Title", y = "x")
+```
+##OBJECTIU
+
+### DATASET NET
+
+```{r}
+write.csv(dataset, "dataset_clean.csv")
+```
+
+#### Selecció de grups d'interés a estudiar
+
+```{r}
+## Segons si es dediquen al món de la indústria o de la informació
+industrial <- dataset[(dataset$jobclass == "1. Industrial"),]
+informacio <- dataset[(dataset$jobclass == "2. Information"),]
+
+## Segons si tenen assegurança mèdica privada
+polissa <- dataset[(dataset$health_ins == "1. Yes"),]
+no_polissa <- dataset[(dataset$health_ins == "2. No"),]
+
+## Segons l'ètnia de la persona
+blancs <- dataset[(dataset$race == "1. White"),]
+negres <- dataset[(dataset$race == "2. Black"),]
+asiatics <- dataset[(dataset$race == "3. Asian"),]
+altres <-  dataset[(dataset$race == "4. Other"),]
+
+```
+Comprovem si els dos datasets compten amb més de 30 tuples per poder aplicar una t-student:
+
+rows_industrial = dim(industrial)[1]
+rows_informacio = dim(informacio)[1]
+cat("El nombre de treballadors de la classe industrial és: ", rows_industrial, "\n")
+
+#### Comprobació de la normalidad y homogeneidad de la varianza
+
+Farem la prova de Anderson-Darling
+
+```{r}
+alpha = 0.05
+col.names = colnames(dataset)
+for (i in 1:ncol(dataset)) {
+  if (i == 1) cat("Variables que no siguen una distribución normal:\n")
+  if (is.integer(dataset[,i]) | is.numeric(dataset[,i])) {
+    p_val = ad.test(dataset[,i])$p.value
+    if (p_val < alpha) {
+      cat(col.names[i])
+      # Format output
+      if (i < ncol(dataset) - 1) cat(", ")
+      if (i %% 3 == 0) cat("\n")
+    }
+  }
+}
+```
+Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres.
+
+Per estudiar la homogeneïtat de les variàncies aplicarem el test de Fligner-Killen.
+
+```{r}
+fligner.test(wage ~ jobclass, data = dataset)
+```
+
+
+
+#### Variables quantitatives que influeixen més en el sou
+
+Farem un anàlisi de correlació
+
+```{r}
+corr_matrix <- matrix(nc = 2, nr = 0)
+colnames(corr_matrix) <- c("estimate", "p-value")
+# Calcular el coeficiente de correlación para cada variable cuantitativa
+# con respecto al campo "precio"
+for (i in 1:(ncol(dataset) - 1)) {
+  if (is.integer(dataset[,i]) | is.numeric(dataset[,i])) {
+    spearman_test = cor.test(dataset[,i],dataset[,length(dataset)],method = "spearman")
+    corr_coef = spearman_test$estimate
+    p_val = spearman_test$p.value
+    # Add row to matrix
+    pair = matrix(ncol = 2, nrow = 1)
+    pair[1][1] = corr_coef
+    pair[2][1] = p_val
+    corr_matrix <- rbind(corr_matrix, pair)
+    rownames(corr_matrix)[nrow(corr_matrix)] <- colnames(dataset)[i]
+  }
+}
+```
+
+```{r}
+print(corr_matrix)
+```
+
+
+
+
+#### Les persones amb una polissa privada tenen un sou més alt?
+
+La prova estadística que realitzarem ara serà un contrast d'hipòtesi sobre dues mostres per determinar si el sou de les persones que tenen contratada una polisa mèdica privada és superior a les persones que no la tenen.
+
+Primer utilitzar els dos subsets generats abans per començar la prova estadística.
+
+```{r}
+n_row_polissa <- dim(polissa)[1]
+n_row_no_polissa <- dim(no_polissa)[1]
+cat("El nombre de treballadors amb pòlissa és: ", n_row_polissa , "\n")
+cat("El nombre de treballadors sense pòlissa és: ", n_row_no_polissa, "\n")
+
+mean(polissa$wage)
+
+mean(no_polissa$wage)
+```
+
+Dit això, la nostra hipòtesi nul·la serà que la mitjana del sou de les persones que tenen una pòlissa d’assegurança mèdica variable és la mateixa que la de les persones que no en tenen. Per contra, la hipòtesi alternativa serà que els treballadors amb una pòlissa d’assegurança mèdica variable tenen un sou mitjà 20 $ més alt que les persones sense pòlissa.
+
+Per tant:
+
+$Ho: μ P = μ NP$
+$H1: μ P > µ NP + 20$
+
+On:
+  P treballadors amb pòlissa
+  NP treballadors sense pòlissa
+
+
+Aquestes dues mostres són independents perquè recullen dades sobre individus diferents. A més, simplement observant que la mida de les mostres és diferent podríem ja assegurar que són independents.
+
+com que desconeixem les variàncies poblacionals, i com que la mida dels dos datasets té una mida superior a 30 assumirem normalitat N pel teorema del límit central.
+
+Podem dir que és un test paramètric perquè com hem dit els dos subsets segueixen una distribució estadística normal.
+
+Finalment sabem que serà contrast unilateral perquè només es compara en una direcció, és a dir, si el sou mitjà és igual o 20 $ més alt en els treballadors amb pòlissa.
+
+Concloíem, que com desconeixem les variàncies poblacionals, però les dues mostres són superior a 30 i no sabem si les dues mostres tenen la mateixa variància, assumim normalitat i suposem que es distribuiran aproximadament com una N(0,1).
+
+##### Càlculs
+
+Primer de tot calcularem manualment l'estadístic de contrast i el *p_value* i per comprovar que s'han calculat correctament farem servir la funció *t.test* que ens calcularà ..... (explicar què fa)
+
+Primer, calcularem les mitjanes i les desviacions estàndards dels dos subsets:
+```{r}
+mx_p <- mean(polissa$wage)
+cat("Mitjana de sou treballadors amb pòlissa: ", mx_p , "\n")
+mx_np <- mean(no_polissa$wage)
+cat("Mitjana de sou treballadors sense pòlissa: ", mx_np , "\n")
+std_p <- sd(polissa$wage)
+cat("Desviació estàndard sou treballadors amb pòlissa: ", std_p , "\n")
+std_np <- sd(no_polissa$wage)
+cat("Desviació estàndard sou treballadors sense pòlissa: ", std_np , "\n")
+
+```
+Calculem amb això l'error estàndard. Aquest és: 
+
+sqrt((std_p^2/n_row_polissa)+(std_np^2/n_row_no_polissa))
+
+On:
+  *std_p* és la desviació de la mostra de treballadors amb pòlissa contractada
+  *std_np* és la desviació de la mostra de treballadors sense pòlissa contractada
+  *n_row_polissa* mida del subset de treballadors amb pòlissa.
+  *n_row_no_polissa* mida del subset de treballadors amb pòlissa.
+  
+  
+```{r}
+std <- sqrt((std_p^2 / n_row_polissa) + (std_np^2 / n_row_no_polissa))
+cat("L'error estàndard és:", std)
+```
+
+Estem en disposició de calcular l'estadístic de contrast:
+
+```{r}
+z = (mx_p-mx_np-20)/(std) ## -20 PERQUE ES 20 EUROS MÉS ALTA
+cat("L'estadístic de contrast és:", z)
+```
+Podem calcular ja el *p-value*:
+
+```{r}
+p_value = 2*(pnorm(-abs(z)))
+cat("El p-value és:", p_value)
+```
+
+El valor crític:
+
+```{r}
+qnorm(1-0.95)
+```
+
+Un cop tenim els valors calculats, podem rebutjar la hipòtesi nul·la, és a dir, podem dir amb un nivell de confiança del 95%, que la mitjana dels sous dels treballadors amb pòlissa no és la mateixa que el dels treballadors sense pòlissa contractada.
+
+Per comprovar-ho podem fixar-nos en el p-valor calculat, veiem que aquest és inferior al nivell de significança que estàvem buscant (5%).  
+
+$1.110042e-07 << 0.05$
+
+
+Concloem per tant, que cal rebutjar la hipòtesi nul·la. 
+
+
+##### Hipòtesi alternativa
+
+Ara, ens centrarem en la hipòtesi alternativa, calcularem l'interval amb un 95% de confiança de la diferència de mitjanes. Per fer-ho, calculem la variància dels subsets (*s pulled*).
+
+```{r}
+
+df =  dim(dataset)[1] -1
+qt = qt(p = 0.05, df = df, lower.tail = FALSE)
+
+s_pulled = ((n_row_polissa-1)*sd(polissa$wage) + (n_row_no_polissa-1)*sd(no_polissa$wage))/(n_row_polissa + n_row_no_polissa -2)
+err <- qt* sqrt(s_pulled/(n_row_polissa + n_row_no_polissa))
+
+interval <- mx_p - mx_np + c(-err,err)
+expected<- mx_p - mx_np 
+
+
+cat("L'interval amb un 95% de confiança de la diferència de mitjanes és: ",interval, "\n")
+
+```
+Veiem com el valor esperat cau dintre de l'interval de confiança. Per tant, amb un 95% de confiança podem afirmar que el salari mitjà dels treballadors amb pòlissa privada és  major que el dels treballadors que no tenen pòlissa contractada. A més, el nostre objectiu era confirmar que era 20 $ major, i podem assegurar-ho perquè tot l'interval està per sobre dels 20 de diferència.
+
+Per comprovar que tot ha anat bé:
+
+Comprovació t.test
+
+```{r}
+t.test(polissa$wage, no_polissa$wage, alternative = "greater", mu=20)
+```
+Comprovem que amb el t.test obtenim el mateix estadístic de contrast i la p-value és menor.
+
+
+#### Model de regressió 
+
+Farem un model predictiu basat en la regressió logística per predir la probabilitat de tenir un salari superior a la mitjana en funció de les variables: *health_ins*, *jobclass* i *age*. Aquesta regresió logística ens permetrà predir el resultat d’una variable categòrica en funció de les variables independents anteriors. Primerament, cal crear una nova variable al dataframe que reculli un valor 0 quan el salari sigui inferior a la mitjana mostral i 1 quan el salari sigui superior a la mitjana mostral.
+
+```{r}
+mean <- mean(dataset$wage)
+dataset$sou_factoritzat[dataset$wage < mean] <-  0
+dataset$sou_factoritzat[dataset$wage >= mean] <-  1
+```
+
+La variable generada:
+
+```{r,eval=TRUE,echo=TRUE}
+str(dataset$sou_factoritzat)
+table(dataset$sou_factoritzat)
+```
+Un cop disposem de la nova variable, podem estimar un model de regressió logística on la variable dependent sigui *sou_factoritzat* i les variables explicatives siguin les demanades: *health_ins*, *jobclass* i *age*.
+
+```{r}
+model_reg_log = glm(formula = sou_factoritzat~ health_ins + jobclass + age, data = dataset, family = binomial)
+summary(model_reg_log)
+```
+
+
+Obtenim un $AIC=3734.2$. Si ens fixem en els regressors que expliquen el model, tots tenen una gran influència perquè el seu p-valor de contrast individual és menor del 5%. En especial, el que sembla tenir una influència més alta és el fet de tenir una pòlissa variable o no, però podem afirmar que tots són significatius.
+
+Per tant, podem afirmar que els tres regressors expliquen bé la variable *wage*.
+
+
+```{r,eval=TRUE,echo=TRUE}
+model_reg_log = glm(formula = sou_factoritzat~ health_ins + jobclass + age + education, data = dataset, family = binomial)
+summary(model_reg_log)
+
+```
+A continuació farem una predicció de la probabilitat de superar el salari mitjà un treballador de 42
+anys, amb pòlissa mèdica amb formació de graduat i exercint en el món de la informació:
+
+Per fer-ho, ens basarem en l'últim model generat amb totes les variables i utilitzarem la funció *predict*. 
+
+Comencem per crear el dataframe:
+
+```{r}
+treballador <- data.frame(health_ins = "1. Yes",
+                     jobclass = "2. Information",
+                     age = 42,
+                     education = "4. College Grad"
+                     )
+```
+
+** Per formació de graduat entenc graduat universitari i per tant la categoria 4.
+
+Executem la funció *predict* amb el parámetre *probability* a _TRUE_ per tal que ens retorni la probabilitat de què el treballador tingui un sou superior a la mitjana:
+
+```{r}
+predict(object = model_reg_log, newdata = treballador ,type="response", probability = TRUE)
+```
+Observem que hi ha una probabilitat del $67.50%$ de què un treballador de 42 anys tingui un sou superior o igual a la mitjana, sent graduat universitari, amb pòlissa privada i dedicant-se a l'àmbit de la informació. Això ho deduïm perquè en els models de regressió logística la variable dependent ha de prendre valors qualitatius, és a dir, ha de ser categòrica. En aquest cas (0,1). Com que veiem que el resultat retornat és 0.6750, afirmem que la possibilitat que *sou_factoritzat* sigui 1 és de 67.50%.
+
+Si ara assumim que el treballador es dedica a l'àmbit industrial, només caldrà canviar el valor de la variable *jobclass* i tornar a aplicar el *predict*:
+
+```{r}
+treballador <- data.frame(health_ins = "1. Yes",
+                     jobclass = "1. Industrial",
+                     age = 42,
+                     education = "4. College Grad"
+                     )
+```
+
+```{r}
+predict(object = model_reg_log, newdata = treballador ,type="response", probability = TRUE)
+```
+
+En aquest cas, veiem que la probabilitat ha disminuït una mica $65.14%$, és a dir, que un treballador amb les mateixes característiques però que es dediqui a la indústria té un 65.14% de probabilitats de tenir un sou per sobre de la mitjana o igual a aquesta.
+
+Per tant, podem concloure que és més probable que si dues persones tenen 42 anys, pòlissa privada i estudis universitaris, si aquesta es dedica al món de la informació, rebi un sou més alt o igual a la mitjana que una que es dediqui al món de la indústria.
+
+Si ara fem servir el mateix model per predir el sou:
+
+```{r}
+model_reg_log = glm(formula = wage~ health_ins + jobclass + age + education, data = dataset)
+summary(model_reg_log)
+```
+```{r}
+predict(object = model_reg_log, newdata = treballador)
+```
+
+
+```{r}
+treballador <- data.frame(health_ins = "1. Yes",
+                     jobclass = "2. Information",
+                     age = 42,
+                     education = "4. College Grad"
+                     )
+predict(object = model_reg_log, newdata = treballador)
+```
+REORDENALO BIEN PERO ES VEU COM EL INFORMATION COBRA MAS
+
+
+
+
+
+
+## Conclusions
+
 
 #Bibliografia
 
 [1] https://www.rdocumentation.org/packages/ISLR/versions/1.2/topics/Wage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
