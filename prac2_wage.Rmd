@@ -213,6 +213,7 @@ Variable continua numèrica amb un sou mitjà de 111.70 ($/1000). El sou mínim 
 
 ### Valors extrems
 
+AQUI FEM LES GRÀFIQUES I FIQUEM LES MATEIXES FORMULES QUE HI HA AL EXEMPLE
 
 ```{r}
 x <- melt(dataset)
@@ -243,7 +244,6 @@ blancs <- dataset[(dataset$race == "1. White"),]
 negres <- dataset[(dataset$race == "2. Black"),]
 asiatics <- dataset[(dataset$race == "3. Asian"),]
 altres <-  dataset[(dataset$race == "4. Other"),]
-
 ```
 Comprovem si els dos datasets compten amb més de 30 tuples per poder aplicar una t-student:
 
@@ -253,7 +253,8 @@ cat("El nombre de treballadors de la classe industrial és: ", rows_industrial, 
 
 #### Comprobació de la normalidad y homogeneidad de la varianza
 
-Farem la prova de Anderson-Darling
+Farem la prova de Shapiro wilk https://www.rdocumentation.org/packages/stats/versions/3.6.1/topics/shapiro.test explica que es http://www.sthda.com/english/wiki/normality-test-in-r
+test de normalidad
 
 ```{r}
 alpha = 0.05
@@ -261,7 +262,7 @@ col.names = colnames(dataset)
 for (i in 1:ncol(dataset)) {
   if (i == 1) cat("Variables que no siguen una distribución normal:\n")
   if (is.integer(dataset[,i]) | is.numeric(dataset[,i])) {
-    p_val = ad.test(dataset[,i])$p.value
+    p_val = shapiro.test(dataset[,i])$p.value
     if (p_val < alpha) {
       cat(col.names[i])
       # Format output
@@ -283,7 +284,8 @@ fligner.test(wage ~ jobclass, data = dataset)
 
 #### Variables quantitatives que influeixen més en el sou
 
-Farem un anàlisi de correlació
+Farem un anàlisi de correlació 
+utilitzem pearson perquè assumim una distribució normal de tots els atributs pe teorema del limit central
 
 ```{r}
 corr_matrix <- matrix(nc = 2, nr = 0)
@@ -305,11 +307,92 @@ for (i in 1:(ncol(dataset) - 1)) {
 }
 ```
 
+
 ```{r}
 print(corr_matrix)
 ```
 
+YEAR ES UNA VARIABLE QUE NO SIRVE PARA NADA PODRIEM ELIMINAR-LA. 
 
+La variable més rellevant es logwage, seguida de age per molta distància.
+
+
+#### Interval de confiança de la variable *wage* segons ètnia
+
+Estudiarem els intervals de confiança de la variable d'estudi *wage* segons les diferents ètnies que es troben al dataset. Utilitzarem els grups formats abans.
+
+Comencem calculant les mitjanes i la desviació estàndard de cada una de les mostres:
+
+```{r}
+mitjana_blancs = mean(blancs$wage)
+mitjana_negres = mean(negres$wage)
+mitjana_asiatics = mean(asiatics$wage)
+mitjana_altres = mean(altres$wage)
+sd_blancs = sd(blancs$wage)
+sd_negres = sd(negres$wage)
+sd_asiatics = sd(asiatics$wage)
+sd_altres = sd(altres$wage)
+
+cat('La mitjana de cada grup és:\n
+    - Blancs: ', mitjana_blancs ,'\n
+    - Negres: ', mitjana_negres ,'\n
+    - Asiatics: ', mitjana_asiatics ,'\n
+    - Altres: ', mitjana_altres ,'\n'
+    )
+
+cat('La desviació estàndard de cada grup és:\n
+    - Blancs: ', sd_blancs ,'\n
+    - Negres: ', sd_negres ,'\n
+    - Asiatics: ', sd_asiatics ,'\n
+    - Altres: ', sd_altres ,'\n'
+    )
+```
+A partir d’aquí, calculem l’error de la mitjana de cadascuna de les mostres dividint la desviació estàndard entre l’arrel de la mida de la mostra:
+```{r}
+stderr_blancs = sd_blancs/sqrt(dim(blancs)[1])
+stderr_negres = sd_negres/sqrt(dim(negres)[1])
+stderr_asiatics = sd_asiatics/sqrt(dim(asiatics)[1])
+stderr_altres = sd_altres/sqrt(dim(altres)[1])
+
+cat("L'error de la mitjana de cada grup és:\n
+    - Blancs: ", sd_blancs ,"\n
+    - Negres: ", sd_negres ,"\n
+    - Asiatics: ", sd_asiatics ,"\n
+    - Altres: ", sd_altres ,"\n"
+    )
+```
+Ara podem calcular el valor crític de cada grup. Aquest és el punt $tα/2$ tal que $P(Z>=tα/2) = α/2$ on t és una variable N(0,1).
+```{r}
+punt_critic_blancs = qt(1-0.05/2, dim(blancs)[1]-1)
+punt_critic_negres = qt(1-0.05/2, dim(negres)[1]-1)
+punt_critic_asiatics = qt(1-0.05/2, dim(asiatics)[1]-1)
+punt_critic_altres = qt(1-0.05/2, dim(altres)[1]-1)
+cat("El valor crític de cada grup és:\n
+    - Blancs: ", punt_critic_blancs ,"\n
+    - Negres: ", punt_critic_negres ,"\n
+    - Asiatics: ", punt_critic_asiatics ,"\n
+    - Altres: ", punt_critic_altres ,"\n"
+    )
+```
+
+```{r}
+cint_blancs <- mitjana_blancs + c(-punt_critic_blancs,punt_critic_blancs)*stderr_blancs
+cint_negres <- mitjana_negres + c(-punt_critic_negres,punt_critic_negres)*stderr_negres
+cint_asiatics <- mitjana_asiatics + c(-punt_critic_asiatics,punt_critic_asiatics)*stderr_asiatics
+cint_altres <- mitjana_altres + c(-punt_critic_altres,punt_critic_altres)*stderr_altres
+cat("'L'interval de confiança amb un 95% de la variable *wage* per cada grup és:\n
+    - Blancs: ", cint_blancs ,"\n
+    - Negres: ", cint_negres ,"\n
+    - Asiatics: ", cint_asiatics ,"\n
+    - Altres: ", cint_altres ,"\n"
+    )
+```
+A partir d'aquí i dels valors obtinguts, es pot interpretar el resultat dels intervals de confiança calculats:
+
+
+Aquests ens permeten afirmar que amb una confiança del 95% que el sou d'una persona que pertanyi a algun d'aquests grups es trobarà dintré d'aquest interval, és a dir, si una persona és blanca amb un 95 de confiança podrem afirmar que el seu sou estarà entre 110.92k i 114.21k. 
+
+En altres paraules, en el 95% de les mostres de la mateixa mida que les que hem estudiat, el valor de la mitjana mostral fa que l'interval obtingut contingui el veritable valor de la mitjana de sou dels treballadors.
 
 
 #### Les persones amb una polissa privada tenen un sou més alt?
@@ -542,6 +625,32 @@ REORDENALO BIEN PERO ES VEU COM EL INFORMATION COBRA MAS
 
 
 
+#### Representació de resultats
+
+AQUI NO SÉ SI VAL LA PENA FICAR QUELCOM
+
+```{r}
+options(scipen=5)
+industrial_wage = mean(industrial$wage)
+informacio_Wage = mean(informacio$wage)
+
+counts <- c(industrial_wage, informacio_Wage)
+barplot(counts, names=c("Industrial", "Informacio"), main="Mitjana dels salaris segons el sector", 
+  	xlab="Salari")
+
+```
+Com havíem vist en les proves estadístiques, les persones dedicades al sector de la informació tenen un sou m9itjà més alt.
+
+```{r}
+polissa_wage = mean(polissa$wage)
+no_polissa_Wage = mean(no_polissa$wage)
+
+counts <- c(polissa_wage, no_polissa_Wage)
+barplot(counts, names=c("Amb segur mèdic privat", "Sense segur mèdic privat"), main="Mitjana dels salaris segons polissa contractada", 
+  	xlab="Salari")
+
+```
+Un altre cop com havíem vist a les proves estadístiques, les persones amb un segur mèdic privat tenen una mitjana de sou més gran.
 
 
 
