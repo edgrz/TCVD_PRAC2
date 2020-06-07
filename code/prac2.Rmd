@@ -547,7 +547,7 @@ $1.110042e-07 << 0.05$
 Concloem per tant, que cal rebutjar la hipòtesi nul·la. 
 
 
-##### Hipòtesi alternativa
+#### Hipòtesi alternativa
 
 Ara, ens centrarem en la hipòtesi alternativa, calcularem l'interval amb un 95% de confiança de la diferència de mitjanes. Per fer-ho, calculem la variància dels subsets (*s pulled*).
 
@@ -578,7 +578,7 @@ t.test(polissa$wage, no_polissa$wage, alternative = "greater", mu=20)
 Comprovem que amb el t.test obtenim el mateix estadístic de contrast i la p-value és menor.
 
 
-#### Model de regressió 
+### Model de regressió 
 
 Farem un model predictiu basat en la regressió logística per predir la probabilitat de tenir un salari superior a la mitjana en funció de les variables: *health_ins*, *jobclass* i *age*. Aquesta regresió logística ens permetrà predir el resultat d’una variable categòrica en funció de les variables independents anteriors. Primerament, cal crear una nova variable al dataframe que reculli un valor 0 quan el salari sigui inferior a la mitjana mostral i 1 quan el salari sigui superior a la mitjana mostral.
 
@@ -627,7 +627,6 @@ treballador <- data.frame(health_ins = "1. Yes",
                      )
 ```
 
-** Per formació de graduat entenc graduat universitari i per tant la categoria 4.
 
 Executem la funció *predict* amb el parámetre *probability* a _TRUE_ per tal que ens retorni la probabilitat de què el treballador tingui un sou superior a la mitjana:
 
@@ -644,9 +643,7 @@ treballador <- data.frame(health_ins = "1. Yes",
                      age = 42,
                      education = "4. College Grad"
                      )
-```
 
-```{r}
 predict(object = model_reg_log, newdata = treballador ,type="response", probability = TRUE)
 ```
 
@@ -654,7 +651,7 @@ En aquest cas, veiem que la probabilitat ha disminuït una mica $65.14%$, és a 
 
 Per tant, podem concloure que és més probable que si dues persones tenen 42 anys, pòlissa privada i estudis universitaris, si aquesta es dedica al món de la informació, rebi un sou més alt o igual a la mitjana que una que es dediqui al món de la indústria.
 
-Si ara fem servir el mateix model per predir el sou:
+Ara, tornem a generar el model de regressió, però aquest cop no volem predir si els treballadors tenen un sou per sobre de la mitjana, sinó que volem predir quin serà el seu sou. D'aquesta manera confirmarem el que hem vist amb l'anterior model: quin dels dos treballadors tindrà un sou més alt
 
 ```{r}
 model_reg_log = glm(formula = wage~ health_ins + jobclass + age + education, data = dataset)
@@ -673,7 +670,6 @@ treballador <- data.frame(health_ins = "1. Yes",
                      )
 predict(object = model_reg_log, newdata = treballador)
 ```
-REORDENALO BIEN PERO ES VEU COM EL INFORMATION COBRA MAS
 
 
 
