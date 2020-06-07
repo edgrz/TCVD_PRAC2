@@ -499,7 +499,7 @@ cat("Desviació estàndard sou treballadors sense pòlissa: ", std_np , "\n")
 ```
 Calculem amb això l'error estàndard. Aquest és: 
 
-sqrt((std_p^2/n_row_polissa)+(std_np^2/n_row_no_polissa))
+$sqrt((std_p^2/nrow(polissa))+(stdnp^2/nrow(nopolissa)))$
 
 On:
   *std_p* és la desviació de la mostra de treballadors amb pòlissa contractada
