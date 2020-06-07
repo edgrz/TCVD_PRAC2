@@ -391,7 +391,7 @@ cat("L'error de la mitjana de cada grup és:\n
     - Altres: ", sd_altres ,"\n"
     )
 ```
-Ara podem calcular el valor crític de cada grup. Aquest és el punt $tα/2$ tal que $P(Z>=tα/2) = α/2$ on t és una variable N(0,1).
+Ara podem calcular el valor crític de cada grup. Aquest és el punt $t(alfa)/2$ tal que $P(Z>=t(alfa)/2) = (alfa)/2$ on t és una variable N(0,1).
 ```{r}
 punt_critic_blancs = qt(1-0.05/2, dim(blancs)[1]-1)
 punt_critic_negres = qt(1-0.05/2, dim(negres)[1]-1)
@@ -448,8 +448,8 @@ Dit això, la nostra hipòtesi nul·la serà que la mitjana del sou de les perso
 
 Per tant:
 
-$Ho: μ P = μ NP$
-$H1: μ P > µ NP + 20$
+$Ho: mu P = mu NP$
+$H1: mu P > mu NP + 20$
 
 On:
   P treballadors amb pòlissa
@@ -686,7 +686,7 @@ Un altre cop com havíem vist a les proves estadístiques, les persones amb un s
 
 
 
-## Conclusions
+# Conclusions
 
 
 #Bibliografia
