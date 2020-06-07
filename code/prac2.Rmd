@@ -19,7 +19,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r} {r message=FALSE, warning=FALSE}
 library(corrplot)
 library(RColorBrewer)
 library(ggplot2)
