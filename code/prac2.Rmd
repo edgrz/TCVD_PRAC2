@@ -578,7 +578,7 @@ t.test(polissa$wage, no_polissa$wage, alternative = "greater", mu=20)
 Comprovem que amb el t.test obtenim el mateix estadístic de contrast i la p-value és menor.
 
 
-### Model de regressió 
+### Regressió logística 
 
 Farem un model predictiu basat en la regressió logística per predir la probabilitat de tenir un salari superior a la mitjana en funció de les variables: *health_ins*, *jobclass* i *age*. Aquesta regresió logística ens permetrà predir el resultat d’una variable categòrica en funció de les variables independents anteriors. Primerament, cal crear una nova variable al dataframe que reculli un valor 0 quan el salari sigui inferior a la mitjana mostral i 1 quan el salari sigui superior a la mitjana mostral.
 
