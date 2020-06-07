@@ -38,8 +38,10 @@ El conjunt de dades que s'analitza en aquesta pràctica tracta sobre el salari i
 
 ## Objectiu de l'anàlisi
 
-A partir d'aquest conjunt de dades es planteja la problemàtica de determinar quines variables influeixen més sobre el salari d'una persona. Es crearan 
-FALTA ACABAR
+A partir d'aquest conjunt de dades es planteja la problemàtica de determinar quines variables influeixen més sobre el salari d'una persona. 
+Per fer-ho, es farà ús de diferents proves estadístiques. Es farà un anàlisi de correlació on es mirarà quines variables influèixen més en el salari d'una persona. Calcularem el interval de confiança del salari per diferents grups de persones, i veurem quins grup guanyen més depenent de les seves característiques. A partir d'un contrast d'hipòtesi, veurem si les persones amb asseguraça privada cobren més que les que no en tenen.  
+
+Amb aquestes proves pretenem estudiar a fons el conjunt de dades, i poder acabar concloent què fa que una persona cobri més. 
 
 ## Descripció del dataset 
 
@@ -135,6 +137,15 @@ boxplot.stats(dataset$wage)$out
 ```
 
 Observem que els atributs age, logwage i wage tenen outliers. Mirant els diferents outliers, veiem que són valors possibles, i que no es tracta d'errors del dataset. Per exemple, pel cas dels anys. Veiem que 80 anys apareix com a valor extrem, tot i que per context es veu que és un valor possible dins del dataset. De la mateixa manera pasa pels atributs logwage i wage. Per tant, al tractare de valors que es poden donar perfectament, s'ha decidit que el tractament dels valors extrems serà deixar-los tal i com estàn.
+
+## Extracció de les dades
+
+Un cop hem estudiat els valors extrems i nuls, i hem eliminat les columnes innecesàries per aquest estudi, podem desar en un nou fitxer denominat *dataset_clean* el conjunt de dades resultant.
+
+```{r}
+write.csv(dataset, "../data/dataset_clean.csv")
+```
+
 
 # Anàlisi de les dades
 
