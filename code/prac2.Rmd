@@ -39,7 +39,7 @@ El conjunt de dades que s'analitza en aquesta pràctica tracta sobre el salari i
 ## Objectiu de l'anàlisi
 
 A partir d'aquest conjunt de dades es planteja la problemàtica de determinar quines variables influeixen més sobre el salari d'una persona. 
-Per fer-ho, es farà ús de diferents proves estadístiques. Es farà un anàlisi de correlació on es mirarà quines variables influèixen més en el salari d'una persona. Calcularem el interval de confiança del salari per diferents grups de persones, i veurem quins grup guanyen més depenent de les seves característiques. A partir d'un contrast d'hipòtesi, veurem si les persones amb asseguraça privada cobren més que les que no en tenen.  
+Per fer-ho, es farà ús de diferents proves estadístiques. Es farà un anàlisi de correlació on es mirarà quines variables influeixen més en el salari d'una persona. Calcularem l'interval de confiança del salari per diferents grups de persones, i veurem quins grups guanyen més depenent de les seves característiques. A partir d'un contrast d'hipòtesi, veurem si les persones amb assegurança privada cobren més que les que no en tenen.  
 
 Amb aquestes proves pretenem estudiar a fons el conjunt de dades, i poder acabar concloent què fa que una persona cobri més. 
 
@@ -98,7 +98,7 @@ Les variables de tipus factor:
 
 # Selecció de les dades d’interès
 
-Els atributs que trobem en el dataset fan referència a característiques de les persones, que seràn d'utilitat per la realització de l'anàlisi. Tot i això, trobem un camp en el dataset que no aporta cap informació útil. És el atribut 'X' que és l'identificador de la persona. Com que no és una dada d'interès, l'eliminarem.
+Els atributs que trobem en el dataset fan referència a característiques de les persones, que seran d'utilitat per la realització de l'anàlisi. Tot i això, trobem un camp en el dataset que no aporta cap informació útil. És l'atribut 'X' que és l'identificador de la persona. Com que no és una dada d'interès, l'eliminarem.
 ```{r}
 dataset <- dataset[, -(1:1)]
 ```
@@ -116,7 +116,7 @@ Podem observar que no hi ha valors buits, pel que no és necessari fer cap proc�
 
 ## Valors extrems
 
-Els valors extrems són aquells que són molt distants a la resta. Per estudiar els valors extrems, ens centrarem en les variables numéricas del dataset. Visualitzem els valors extrems amb gràfiqus boxplot per tal de veure-ho representat de manera gràfica.
+Els valors extrems són aquells que són molt distants a la resta. Per estudiar els valors extrems, ens centrarem en les variables numèriques del dataset. Visualitzem els valors extrems amb gràfiques boxplot per tal de veure-ho representat de manera gràfica.
 
 ```{r}
 x <- melt(dataset)
@@ -136,11 +136,11 @@ cat('Outliers wage:\n')
 boxplot.stats(dataset$wage)$out
 ```
 
-Observem que els atributs age, logwage i wage tenen outliers. Mirant els diferents outliers, veiem que són valors possibles, i que no es tracta d'errors del dataset. Per exemple, pel cas dels anys. Veiem que 80 anys apareix com a valor extrem, tot i que per context es veu que és un valor possible dins del dataset. De la mateixa manera pasa pels atributs logwage i wage. Per tant, al tractare de valors que es poden donar perfectament, s'ha decidit que el tractament dels valors extrems serà deixar-los tal i com estàn.
+Observem que els atributs age, logwage i wage tenen outliers. Mirant els diferents outliers, veiem que són valors possibles, i que no es tracta d'errors del dataset. Per exemple, pel cas dels anys. Veiem que 80 anys apareix com a valor extrem, tot i que per context es veu que és un valor possible dins del dataset. De la mateixa manera passa pels atributs logwage i wage. Per tant, al tractar-se de valors que es poden donar perfectament, s'ha decidit que el tractament dels valors extrems serà deixar-los tal i com estan.
 
 ## Extracció de les dades
 
-Un cop hem estudiat els valors extrems i nuls, i hem eliminat les columnes innecesàries per aquest estudi, podem desar en un nou fitxer denominat *dataset_clean* el conjunt de dades resultant.
+Un cop hem estudiat els valors extrems i nuls, i hem eliminat les columnes innecessàries per aquest estudi, podem desar en un nou fitxer denominat *dataset_clean* el conjunt de dades resultant.
 
 ```{r}
 write.csv(dataset, "../data/dataset_clean.csv")
@@ -321,9 +321,9 @@ for (i in 1:ncol(dataset)) {
 }
 ```
 
-Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres. El Teorema del límit central indica que la distribució de la suma estandaritzada de variables aleatòries independents que tenen una variància finita tendeix a una distribució normal estàndard quan el nombre de termes de la suma creix indefinidament. [4]
+Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres. El Teorema del límit central indica que la distribució de la suma estandarditzada de variables aleatòries independents que tenen una variància finita tendeix a una distribució normal estàndard quan el nombre de termes de la suma creix indefinidament. [4]
 
-Ara és torn d'estudiar la homogeneïtat de les variàncies. També conegut com test d'homocedasticitat considera que la variància és constant entre els diferentts grups d'una mostra, és a dir, tots els grups conformats anteriorment tenen la mateixa variància. Per comprovar-ho aplicarem el test de Fligner-Killen[5].
+Ara és torn d'estudiar l'homogeneïtat de les variàncies. També conegut com test d'homoscedasticitat considera que la variància és constant entre els diferents grups d'una mostra, és a dir, tots els grups conformats anteriorment tenen la mateixa variància. Per comprovar-ho aplicarem el test de Fligner-Killen[5].
 
 ```{r}
 fligner.test(wage ~ jobclass, data = dataset)
@@ -332,7 +332,7 @@ fligner.test(wage ~ jobclass, data = dataset)
 ## Aplicació de proves estadístiques per comparar els grups de dades. 
 
 ### Anàlisi de correlació
-Començarem fent un anàlisi de correlació entre les diferents variables per poder determinar quina d'elles té més influència a l'hora de determinar el salari d'una persona. Per fer-ho, utilitzarem el coeficient de correlació de Pearson, ja que hem assumim una distribució normal de tots els atributs pel teorema del limit central.
+Començarem fent un anàlisi de correlació entre les diferents variables per poder determinar quina d'elles té més influència a l'hora de determinar el salari d'una persona. Per fer-ho, utilitzarem el coeficient de correlació de Pearson, ja que hem assumim una distribució normal de tots els atributs pel teorema del límit central.
 
 ```{r}
 corr_matrix <- matrix(nc = 2, nr = 0)
@@ -355,7 +355,7 @@ for (i in 1:(ncol(dataset) - 1)) {
 print(corr_matrix)
 ```
 
-Podem identificar de les diferents variables numériques, quines estan més relacionades amb el salari en funció de la seva proximitat als valors +-1. Observem que la variable numérica més rellevant és *logwage*, i la que menys és *year*, el que significa que el registre de salari d'un treballador té més relació amb el salari de la persona que l'edat que té o que l'any en què es va recollir la mostra. 
+Podem identificar de les diferents variables numèriques, quines estan més relacionades amb el salari en funció de la seva proximitat als valors +-1. Observem que la variable numèrica més rellevant és *logwage*, i la que menys és *year*, el que significa que el registre de salari d'un treballador té més relació amb el salari de la persona que l'edat que té o que l'any en què es va recollir la mostra. 
   
 ### Interval de confiança de la variable *wage* segons ètnia
 
@@ -435,11 +435,11 @@ cat("'L'interval de confiança amb un 95% de la variable *wage* per cada grup é
 Amb els valors obtinguts, es pot interpretar el resultat dels intervals de confiança calculats:
 
 
-Aquests ens permeten afirmar que amb una confiança del 95% que el sou d'una persona que pertanyi a algun d'aquests grups es trobarà dintré d'aquest interval, és a dir, si una persona és blanca amb un 95 de confiança podrem afirmar que el seu sou estarà entre 110.92k i 114.21k. 
+Aquests ens permeten afirmar que amb una confiança del 95% que el sou d'una persona que pertanyi a algun d'aquests grups es trobarà dins d'aquest interval, és a dir, si una persona és blanca amb un 95 de confiança podrem afirmar que el seu sou estarà entre 110.92k i 114.21k. 
 
 En altres paraules, en el 95% de les mostres de la mateixa mida que les que hem estudiat, el valor de la mitjana mostral fa que l'interval obtingut contingui el veritable valor de la mitjana de sou dels treballadors.
 
-Veiem per tant com els els asiàtics són l'ètnia amb un interval de la variable *wage* més alt, seguit dels blancs. A partir d'aquí, trobem les altres dues ètnies, però amb una diferència més gran respecte aquests. Per tant, podem dir que si existeix una desigualtat entre races produïda possiblement per molts factors com per exemple, la diferència del nivell d'estudis entre ètnies.
+Veiem per tant com els asiàtics són l'ètnia amb un interval de la variable *wage* més alt, seguit dels blancs. A partir d'aquí, trobem les altres dues ètnies, però amb una diferència més gran respecte aquests. Per tant, podem dir que si existeix una desigualtat entre races produïda possiblement per molts factors com per exemple, la diferència del nivell d'estudis entre ètnies.
 
 
 ```{r}
@@ -453,11 +453,11 @@ Podem veure com en proporció, la presència de blancs i asiàtics en nivell d'e
 
 ### Existeix una diferència en el sou segons si el treballador té contractada una polissa privada?
 
-A continuació volem donar resposta la següent pregunta següent: Les persones amb una polissa privada tenen un sou més alt?
+A continuació volem donar resposta la següent pregunta següent: Les persones amb una pòlissa privada tenen un sou més alt?
 
-La prova estadística que realitzarem ara serà un contrast d'hipòtesi sobre dues mostres per determinar si el sou de les persones que tenen contratada una polisa mèdica privada és superior a les persones que no la tenen.
+La prova estadística que realitzarem ara serà un contrast d'hipòtesi sobre dues mostres per determinar si el sou de les persones que tenen contractada una pòlissa mèdica privada és superior a les persones que no la tenen.
 
-Primer utilitzar els dos subsets generats abans per començar la prova estadística.
+Primer utilitzar els dos subconjunts generats abans per començar la prova estadística.
 
 ```{r}
 n_row_polissa <- dim(polissa)[1]
@@ -496,9 +496,9 @@ Concloíem, que com desconeixem les variàncies poblacionals, però les dues mos
 
 ##### Càlculs
 
-Primer de tot calcularem manualment l'estadístic de contrast i el *p_value* i per comprovar que s'han calculat correctament farem servir la funció *t.test* que ens calcularà ..... (explicar què fa)
-
-Primer, calcularem les mitjanes i les desviacions estàndards dels dos subsets:
+  Primer de tot calcularem manualment l'estadístic de contrast i el *p_value* i per comprovar que s'han calculat correctament farem servir la funció *t.test* que ens calcularà ..... (explicar què fa)
+  
+  Primer, calcularem les mitjanes i les desviacions estàndards dels dos subsets:
 ```{r}
 mx_p <- mean(polissa$wage)
 cat("Mitjana de sou treballadors amb pòlissa: ", mx_p , "\n")
