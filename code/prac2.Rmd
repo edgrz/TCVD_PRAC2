@@ -271,7 +271,8 @@ Variable continua numèrica amb un sou mitjà de 111.70 ($/1000). El sou mínim 
 
 ## Selecció de grups d'interés a estudiar
 
-A continuació seleccionem els grups de dinte el nostre conjunt de dades que hem considerat interesants per estudiar. Hem determinat diferents grups d'estudi, tot i que no els hem utilitzat tots en les proves estadístiques. 
+A continuació seleccionem els grups del nostre conjunt de dades que hem considerat interessants per estudiar els sous en funció d'ells. 
+
 ```{r}
 ## Segons si es dediquen al món de la indústria o de la informació
 industrial <- dataset[(dataset$jobclass == "1. Industrial"),]
@@ -296,7 +297,7 @@ Farem la prova de Shapiro wilk [2]. El test Shapiro Wilk es fa servir per contra
 alpha = 0.05
 col.names = colnames(dataset)
 for (i in 1:ncol(dataset)) {
-  if (i == 1) cat("Variables que no siguen una distribución normal:\n")
+  if (i == 1) cat("Variables que no segueixen una distribució normal:\n")
   if (is.integer(dataset[,i]) | is.numeric(dataset[,i])) {
     p_val = shapiro.test(dataset[,i])$p.value
     if (p_val < alpha) {
@@ -309,9 +310,9 @@ for (i in 1:ncol(dataset)) {
 }
 ```
 
-Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres. El Teorema del límit central indica que la distribució de la suma estandarditzada de variables aleatòries independents que tenen una variància finita tendeix a una distribució normal estàndard quan el nombre de termes de la suma creix indefinidament. [4]
+Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres. El Teorema del límit central indica que la distribució de la suma estandaritzada de variables aleatòries independents que tenen una variància finita tendeix a una distribució normal estàndard quan el nombre de termes de la suma creix indefinidament. [4]
 
-Per estudiar la homogeneïtat de les variàncies aplicarem el test de Fligner-Killen.
+Ara és torn d'estudiar la homogeneïtat de les variàncies. També conegut com test d'homocedasticitat considera que la variància és constant entre els diferentts grups d'una mostra, és a dir, tots els grups conformats anteriorment tenen la mateixa variància. Per comprovar-ho aplicarem el test de Fligner-Killen[5].
 
 ```{r}
 fligner.test(wage ~ jobclass, data = dataset)
@@ -699,6 +700,7 @@ Un altre cop com havíem vist a les proves estadístiques, les persones amb un s
 
 [4] En.wikipedia.org. 2020. Central Limit Theorem. [online] Available at: <https://en.wikipedia.org/wiki/Central_limit_theorem> [Accessed 7 June 2020].
 
+[5] https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/fligner.test
 
 
 
