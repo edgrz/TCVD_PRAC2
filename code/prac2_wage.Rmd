@@ -32,55 +32,111 @@ library(ISLR)
 library(nortest)
 ```
 
-## Càrrega de dades
+# Descripció
 
-Primer de tot, carreguem el data set. En aquest cas, utilitzarem un dataset que proporciona el propi R Studio anomenat WAGE sobre el càncer de mama a Wisconsin concretament el del diagnòstic.
+El conjunt de dades que s'analitza en aquesta pràctica tracta sobre el salari i diferents característiques de les persones. Està disponible al següent enllaç de Kaggle https://www.kaggle.com/pcampana/wagepeople
+
+## Objectiu de l'anàlisi
+
+A partir d'aquest conjunt de dades es planteja la problemàtica de determinar quines variables influeixen més sobre el salari d'una persona. Es crearan 
+FALTA ACABAR
+
+## Descripció del dataset 
+
+Llegim el conjunt de dades que es troba en el fitxer dataset_original.
 
 ```{r}
-data(Wage)
-dataset <- Wage
-summary(dataset)
+dataset <- read.csv("../data/dataset_original.csv")
 ```
-Si inspeccionem les dades podrem veure el tipus de cadascuna de les variables:
-```{r}
-str(dataset)
-```
-Un cop carregat i assignat el nom de les columnes, és moment de veure la magnitud de les dades.
 
+Si inspeccionem les dades podrem veure per una banda el tamany del dataset, i per altra banda el tipus de cadascuna de les variables,
 ```{r}
 files = dim(dataset)[1] #files del dataframe
-files
 columnes = dim(dataset)[2] #columnes del dataframe
-columnes
-```
-En total, existeixen 3000 mostres i 11 atributs per cadascuna d'elles.
-
-TIPUS DE DADES
-
-```{r}
+cat('Tamany del dataset:\n
+    - Files: ', files ,'\n
+    - Columnes: ', columnes ,'\n'
+    )
 sapply(dataset, function(x) class(x))
 ```
-Observem que el tipus de dades assignat per part del propi R a cadascun dels atributs, es correspon amb la pròpia naturalesa i domini d'aquestes.
 
-Tenim un dataframe de 3000 treballadors amb 11 atributs per cadascun d’ells. Els atributs són de tres tipus:
+Veiem que el tipus de dades assignat per part del propi R a cadascun dels atributs, es correspon amb la pròpia naturalesa i domini d'aquestes. Tenim un dataframe de 3000 treballadors amb 12 atributs per cadascun d’ells. Els atributs són de tres tipus:
 
--int -Factor -num
+- int
+- Factor 
+- num
 
-Les variables numèriques són: - year: fa referència a l’any en el qual es va recollir la informació del salari corresponent a aquella fila. - age: edat del treballador en el moment en què es va recollir la informació. - logwage: registre del salari del treballador - wage: salari brut del treballador per 1000 $
+Les variables numèriques són: 
 
-Les variables de tipus factor: - maritl: fa referència a l’estat civil del treballador. Pot prendre diversos valors: 1. Never Married 2. Married 3. Widowed 4. Divorced and 5. Separated. - race: fa referència a la raça del treballador. Pot prendre els següents valors: 1. White 2. Black 3. Asian and 4. Other. - education: fa referència al nivell d’estudis del treballador. Pot prendre els següents valors: 1. < HS Grad 2. HS Grad 3. Some College 4. College Grad and 5.Advanced Degree - region: fa referència a la regió on viu el treballador. Només pren un valor: mid-atlantic - jobclass: fa referència al tipus de treball. Pot prendre els següents valors: 1. Industrial and 2. Information. - health: fa referència a l’estat de salut. Pot prendre els següents valors: 1. <=Good and 2. >=Very Good - health_ins: fa referència a si el treballador té sanitat privada o no. Pot prendre els següents valors: 1. Yes and 2. No.
+- X: identificador de la persona
 
-Ara anem a veure si existeixen valors nuls
+- year: fa referència a l’any en el qual es va recollir la informació del salari corresponent a aquella fila. 
+
+- age: edat del treballador en el moment en què es va recollir la informació. 
+
+- logwage: registre del salari del treballador - wage: salari brut del treballador per 1000 $
+
+Les variables de tipus factor: 
+
+- maritl: fa referència a l’estat civil del treballador. Pot prendre diversos valors: 1. Never Married 2. Married 3. Widowed 4. Divorced and 5. Separated. 
+
+- race: fa referència a la raça del treballador. Pot prendre els següents valors: 1. White 2. Black 3. Asian and 4. Other. 
+
+- education: fa referència al nivell d’estudis del treballador. Pot prendre els següents valors: 1. < HS Grad 2. HS Grad 3. Some College 4. College Grad and 5.Advanced Degree 
+
+- region: fa referència a la regió on viu el treballador. Només pren un valor: mid-atlantic 
+
+- jobclass: fa referència al tipus de treball. Pot prendre els següents valors: 1. Industrial and 2. Information. 
+
+- health: fa referència a l’estat de salut. Pot prendre els següents valors: 1. <=Good and 2. >=Very Good 
+
+- health_ins: fa referència a si el treballador té sanitat privada o no. Pot prendre els següents valors: 1. Yes and 2. No.
+
+# Selecció de les dades d’interès
+
+Els atributs que trobem en el dataset fan referència a característiques de les persones, que seràn d'utilitat per la realització de l'anàlisi. Tot i això, trobem un camp en el dataset que no aporta cap informació útil. És el atribut 'X' que és l'identificador de la persona. Com que no és una dada d'interès, l'eliminarem.
+```{r}
+dataset <- dataset[, -(1:1)]
+```
+
+# Neteja de dades
+
+## Valors nuls
+
+Un cop tenim el conjunt de dades insertat, inspeccionem si existeixen valors nuls. Per fer-ho, inspeccionarem cada columna del dataset buscant valors buits.
 ```{r}
 colSums(is.na(dataset))
 ```
 
-## INSPECCIÓ DE LES DADES
+Podem observar que no hi ha valors buits, pel que no és necessari fer cap procés de neteja al conjunt de dades referent a valors nuls.
 
-## Estadística descriptiva i visualització
+## Valors extrems
 
+Els valors extrems són aquells que són molt distants a la resta. Per estudiar els valors extrems, ens centrarem en les variables numéricas del dataset. Visualitzem els valors extrems amb gràfiqus boxplot per tal de veure-ho representat de manera gràfica.
 
-Un cop carregades i inspeccionades les dades és moment de fer una descriptiva numèrica de les dades. Començarem atribut a atribut:
+```{r}
+x <- melt(dataset)
+plt <- ggplot(data = x, aes(x = variable, y = value))
+plt + geom_boxplot() + theme_minimal() + labs(x = "Title", y = "x")
+```
+
+S'observa que hi ha diferents valors extrems. Observarem quins valors prenen els outliers per tal de poder decidir que fer amb ells. 
+```{r}
+cat('Outliers year:\n')
+boxplot.stats(dataset$year)$out
+cat('Outliers age:\n')
+boxplot.stats(dataset$age)$out
+cat('Outliers logwage:\n')
+boxplot.stats(dataset$logwage)$out
+cat('Outliers wage:\n')
+boxplot.stats(dataset$wage)$out
+```
+
+Observem que els atributs age, logwage i wage tenen outliers. Mirant els diferents outliers, veiem que són valors possibles, i que no es tracta d'errors del dataset. Per exemple, pel cas dels anys. Veiem que 80 anys apareix com a valor extrem, tot i que per context es veu que és un valor possible dins del dataset. De la mateixa manera pasa pels atributs logwage i wage. Per tant, al tractare de valors que es poden donar perfectament, s'ha decidit que el tractament dels valors extrems serà deixar-los tal i com estàn.
+
+# Anàlisi de les dades
+
+Començarem inspeccionant els diferents atributs que tenim al dataset. Un cop carregades les dades, és moment de fer una descriptiva numèrica de les dades. Ho mirarem atribut a atribut:
 
 __*year*__
 
@@ -211,25 +267,9 @@ summary(dataset$wage)
 Variable continua numèrica amb un sou mitjà de 111.70 ($/1000). El sou mínim recollit en el dataframe és 20.09 i el sou màxim 318.34. Es mostren també els sis valors resum d'una variable (mínim, màxim, Q1, mediana, mitjana i Q3) per tal de consolidar coneixement.
 
 
-### Valors extrems
+## Selecció de grups d'interés a estudiar
 
-AQUI FEM LES GRÀFIQUES I FIQUEM LES MATEIXES FORMULES QUE HI HA AL EXEMPLE
-
-```{r}
-x <- melt(dataset)
-plt <- ggplot(data = x, aes(x = variable, y = value))
-plt + geom_boxplot() + theme_minimal() + labs(x = "Title", y = "x")
-```
-##OBJECTIU
-
-### DATASET NET
-
-```{r}
-write.csv(dataset, "dataset_clean.csv")
-```
-
-#### Selecció de grups d'interés a estudiar
-
+A continuació seleccionem els grups de dinte el nostre conjunt de dades que hem considerat interesants per estudiar. Hem determinat diferents grups d'estudi, tot i que no els hem utilitzat tots en les proves estadístiques. 
 ```{r}
 ## Segons si es dediquen al món de la indústria o de la informació
 industrial <- dataset[(dataset$jobclass == "1. Industrial"),]
@@ -245,16 +285,10 @@ negres <- dataset[(dataset$race == "2. Black"),]
 asiatics <- dataset[(dataset$race == "3. Asian"),]
 altres <-  dataset[(dataset$race == "4. Other"),]
 ```
-Comprovem si els dos datasets compten amb més de 30 tuples per poder aplicar una t-student:
 
-rows_industrial = dim(industrial)[1]
-rows_informacio = dim(informacio)[1]
-cat("El nombre de treballadors de la classe industrial és: ", rows_industrial, "\n")
+## Comprovació de la normalitat i homogeneïtat de la variància
 
-#### Comprobació de la normalidad y homogeneidad de la varianza
-
-Farem la prova de Shapiro wilk https://www.rdocumentation.org/packages/stats/versions/3.6.1/topics/shapiro.test explica que es http://www.sthda.com/english/wiki/normality-test-in-r
-test de normalidad
+Farem la prova de Shapiro wilk [2]. El test Shapiro Wilk es fa servir per contrastar la normalitat d'un conjunt de dades. Es planteja com a hipòtesi nul·la que una mostra x1, ..., xn específicament d'una població normalment distribuïda. [3]
 
 ```{r}
 alpha = 0.05
@@ -272,7 +306,8 @@ for (i in 1:ncol(dataset)) {
   }
 }
 ```
-Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres.
+
+Tanmateix, pel teorema del límit central assumim normalitat en tenir més de 30 mostres. El Teorema del límit central indica que la distribució de la suma estandarditzada de variables aleatòries independents que tenen una variància finita tendeix a una distribució normal estàndard quan el nombre de termes de la suma creix indefinidament. [4]
 
 Per estudiar la homogeneïtat de les variàncies aplicarem el test de Fligner-Killen.
 
@@ -280,7 +315,9 @@ Per estudiar la homogeneïtat de les variàncies aplicarem el test de Fligner-Ki
 fligner.test(wage ~ jobclass, data = dataset)
 ```
 
+## Aplicació de proves estadístiques per comparar els grups de dades. 
 
+ESTIC AQUI. ARA SEGUEIXO
 
 #### Variables quantitatives que influeixen més en el sou
 
@@ -659,14 +696,13 @@ Un altre cop com havíem vist a les proves estadístiques, les persones amb un s
 
 #Bibliografia
 
-[1] https://www.rdocumentation.org/packages/ISLR/versions/1.2/topics/Wage
+[1] Rdocumentation.org. 2020. Wage Function | R Documentation. [online] Available at: <https://www.rdocumentation.org/packages/ISLR/versions/1.2/topics/Wage> [Accessed 7 June 2020].
 
+[2] Rdocumentation.org. 2020. Shapiro.Test Function | R Documentation. [online] Available at: <https://www.rdocumentation.org/packages/stats/versions/3.6.1/topics/shapiro.test> [Accessed 7 June 2020].
 
+[3] Sthda.com. 2020. Normality Test In R - Easy Guides - Wiki - STHDA. [online] Available at: <http://www.sthda.com/english/wiki/normality-test-in-r> [Accessed 7 June 2020].
 
-
-
-
-
+[4] En.wikipedia.org. 2020. Central Limit Theorem. [online] Available at: <https://en.wikipedia.org/wiki/Central_limit_theorem> [Accessed 7 June 2020].
 
 
 
