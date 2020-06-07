@@ -19,7 +19,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 library(corrplot)
 library(RColorBrewer)
 library(ggplot2)
@@ -464,10 +464,12 @@ Dit això, la nostra hipòtesi nul·la serà que la mitjana del sou de les perso
 Per tant:
 
 $Ho: mu P = mu NP$
+
 $H1: mu P > mu NP + 20$
 
 On:
   P treballadors amb pòlissa
+  
   NP treballadors sense pòlissa
 
 
@@ -499,12 +501,15 @@ cat("Desviació estàndard sou treballadors sense pòlissa: ", std_np , "\n")
 ```
 Calculem amb això l'error estàndard. Aquest és: 
 
-sqrt((std_p^2/n_row_polissa)+(std_np^2/n_row_no_polissa))
+sqrt((std_p^2 /n_row_polissa)+(std_np^2 /n_row_no_polissa))
 
 On:
-  *std_p* és la desviació de la mostra de treballadors amb pòlissa contractada
+  *std_p* és la desviació de la mostra de treballadors amb pòlissa 
+  
   *std_np* és la desviació de la mostra de treballadors sense pòlissa contractada
+  
   *n_row_polissa* mida del subset de treballadors amb pòlissa.
+  
   *n_row_no_polissa* mida del subset de treballadors amb pòlissa.
   
   
