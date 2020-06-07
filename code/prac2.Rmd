@@ -321,7 +321,7 @@ fligner.test(wage ~ jobclass, data = dataset)
 ## Aplicació de proves estadístiques per comparar els grups de dades. 
 
 ### Anàlisi de correlació
-Començarem fent un anàlisi de correlació entre les difernets variables per poder determinar quina d'elles té més influència alhora de determinar el salari d'una persona. Per fer-ho, utilitzarem el coeficient de correlació de Pearson, ja que hem assumim una distribució normal de tots els atributs pel teorema del limit central.
+Començarem fent un anàlisi de correlació entre les diferents variables per poder determinar quina d'elles té més influència a l'hora de determinar el salari d'una persona. Per fer-ho, utilitzarem el coeficient de correlació de Pearson, ja que hem assumim una distribució normal de tots els atributs pel teorema del limit central.
 
 ```{r}
 corr_matrix <- matrix(nc = 2, nr = 0)
@@ -344,13 +344,11 @@ for (i in 1:(ncol(dataset) - 1)) {
 print(corr_matrix)
 ```
 
-Podem identificar de les diferents variables numériques, quines estan més relacionades amb el salaria en funció de la seva proximitat als valors +-1. Observem que la variable numérica més rellevant és logwage, i la que menys és year, el que significa que 
-
-D'aquí podem veure que dels variables numériques, la variable més rellevant és logwage, seguida de age i year per molta distància. Això significa que el registre de salari d'un treballador té més relació amb el salari de la persona que l'edat que té o que l'any que es va recollir la mostra. 
+Podem identificar de les diferents variables numériques, quines estan més relacionades amb el salari en funció de la seva proximitat als valors +-1. Observem que la variable numérica més rellevant és *logwage*, i la que menys és *year*, el que significa que el registre de salari d'un treballador té més relació amb el salari de la persona que l'edat que té o que l'any en què es va recollir la mostra. 
   
 ### Interval de confiança de la variable *wage* segons ètnia
 
-Estudiarem els intervals de confiança de la variable d'estudi *wage* segons les diferents ètnies que es troben al dataset. Utilitzarem els grups formats abans.
+La segona prova estadística que realitzarem serà el càlcul dels intervals de confiança de la variable *wage* segons les diferents ètnies que es troben al dataset. D'aquesta manera veurem si segons l'ètnia els ingressos dels habitants són diferents i si existeix alguna  desigualtat. Per fer aquesta prova utilitzarem els grups generats anteriorment on hem separat per la variable *race*.
 
 Comencem calculant les mitjanes i la desviació estàndard de cada una de les mostres:
 
@@ -378,7 +376,9 @@ cat('La desviació estàndard de cada grup és:\n
     - Altres: ', sd_altres ,'\n'
     )
 ```
+
 A partir d’aquí, calculem l’error de la mitjana de cadascuna de les mostres dividint la desviació estàndard entre l’arrel de la mida de la mostra:
+
 ```{r}
 stderr_blancs = sd_blancs/sqrt(dim(blancs)[1])
 stderr_negres = sd_negres/sqrt(dim(negres)[1])
@@ -406,6 +406,8 @@ cat("El valor crític de cada grup és:\n
     )
 ```
 
+Arribats aquí estem en disposició de calcular els intervals de confiança:
+
 ```{r}
 cint_blancs <- mitjana_blancs + c(-punt_critic_blancs,punt_critic_blancs)*stderr_blancs
 cint_negres <- mitjana_negres + c(-punt_critic_negres,punt_critic_negres)*stderr_negres
@@ -418,15 +420,27 @@ cat("'L'interval de confiança amb un 95% de la variable *wage* per cada grup é
     - Altres: ", cint_altres ,"\n"
     )
 ```
-A partir d'aquí i dels valors obtinguts, es pot interpretar el resultat dels intervals de confiança calculats:
+
+Amb els valors obtinguts, es pot interpretar el resultat dels intervals de confiança calculats:
 
 
 Aquests ens permeten afirmar que amb una confiança del 95% que el sou d'una persona que pertanyi a algun d'aquests grups es trobarà dintré d'aquest interval, és a dir, si una persona és blanca amb un 95 de confiança podrem afirmar que el seu sou estarà entre 110.92k i 114.21k. 
 
 En altres paraules, en el 95% de les mostres de la mateixa mida que les que hem estudiat, el valor de la mitjana mostral fa que l'interval obtingut contingui el veritable valor de la mitjana de sou dels treballadors.
 
+Veiem per tant com els els asiàtics són l'ètnia amb un interval de la variable *wage* més alt, seguit dels blancs. A partir d'aquí, trobem les altres dues ètnies, però amb una diferència més gran respecte aquests. Per tant, podem dir que si existeix una desigualtat entre races produïda possiblement per molts factors com per exemple, la diferència del nivell d'estudis entre ètnies.
 
-### Contrast d'hipòtesi
+
+```{r}
+table(blancs$education)
+table(asiatics$education)
+table(negres$education)
+table(altres$education)
+```
+Podem veure com en proporció, la presència de blancs i asiàtics en nivell d'estudis avançats és més alta que en la resta. Per altra banda, negres i la categoria que engloba *Others* mentre que la resta es concentren en educació secundària i educació superior.
+
+
+### Existeix una diferència en el sou segons si el treballador té contractada una polissa privada?
 
 A continuació volem donar resposta la següent pregunta següent: Les persones amb una polissa privada tenen un sou més alt?
 
