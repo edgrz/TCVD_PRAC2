@@ -671,7 +671,7 @@ model_reg_log = glm(formula = wage~ health_ins + jobclass + age + education, dat
 summary(model_reg_log)
 ```
 
-Un cop tenim el model tornem a fer els predicts:
+Un cop generat el nou model estem en disposició de tornar a executar la funció *predict* per obtenir els sous dels treballadors:
 
 ```{r}
 predict(object = model_reg_log, newdata = treballador)
@@ -686,12 +686,12 @@ treballador <- data.frame(health_ins = "1. Yes",
                      )
 predict(object = model_reg_log, newdata = treballador)
 ```
-
+Com era d'esperar veiem com el treballador dedicat al sector de la informació tindria un sou més alt.
 
 
 #### Representació de resultats
 
-Hi ha diferents representacions que ens poden mostrar la diferència salarial segons els atributs que han estat objecte d'estudi en les proves estadístiques. Un dels més siginificatius és la diferència de sou segons l'ètnia.
+Hi ha diferents representacions que ens poden mostrar la diferència salarial segons els atributs que han estat objecte d'estudi en les proves estadístiques. Un dels més significatius és la diferència de sou segons l'ètnia.
 
 ```{r}
 options(scipen=5)
@@ -705,9 +705,9 @@ barplot(counts, names=c("Blancs", "Negres", "Altres", "Asiàtics"), main="Mitjan
   	xlab="Salari")
 
 ```
-Com ja haviem pogut veure en les proves anteriors, els blancs i els asiàtics són els que més cobren.
+Com ja havíem pogut veure en les proves anteriors, els blancs i els asiàtics són els que més cobren.
 
-Visualitzem ara la diferència de sou segons si tenen pòliça contractada.
+Visualitzem ara la diferència de sou segons si tenen pòlissa contractada.
 
 
 ```{r}
