@@ -680,19 +680,24 @@ predict(object = model_reg_log, newdata = treballador)
 
 #### Representació de resultats
 
-AQUI NO SÉ SI VAL LA PENA FICAR QUELCOM
+Hi ha diferents representacions que ens poden mostrar la diferència salarial segons els atributs que han estat objecte d'estudi en les proves estadístiques. Un dels més siginificatius és la diferència de sou segons l'ètnia.
 
 ```{r}
 options(scipen=5)
-industrial_wage = mean(industrial$wage)
-informacio_Wage = mean(informacio$wage)
+blancs_wage = mean(blancs$wage)
+negres_wage = mean(negres$wage)
+altres_wage = mean(altres$wage)
+asiatics_wage = mean(asiatics$wage)
 
-counts <- c(industrial_wage, informacio_Wage)
-barplot(counts, names=c("Industrial", "Informacio"), main="Mitjana dels salaris segons el sector", 
+counts <- c(blancs_wage, negres_wage, altres_wage, asiatics_wage)
+barplot(counts, names=c("Blancs", "Negres", "Altres", "Asiàtics"), main="Mitjana dels salaris segons ètnia", 
   	xlab="Salari")
 
 ```
-Com havíem vist en les proves estadístiques, les persones dedicades al sector de la informació tenen un sou mitjà més alt.
+Com ja haviem pogut veure en les proves anteriors, els blancs i els asiàtics són els que més cobren.
+
+Visualitzem ara la diferència de sou segons si tenen pòliça contractada.
+
 
 ```{r}
 polissa_wage = mean(polissa$wage)
@@ -705,8 +710,6 @@ barplot(counts, names=c("Amb segur mèdic privat", "Sense segur mèdic privat"),
 ```
 Un altre cop com havíem vist a les proves estadístiques, les persones amb un segur mèdic privat tenen una mitjana de sou més gran.
 
-
-
 # Conclusions
 
 Com hem pogut veure s'han realitzat diferents proves estadístiques sobre el dataset. Hem començat fent un estudi dels valors nuls i extrems per determinar si haviem de fer algun tractament a les tuples del dataset. Hem vist que no feia falta, però el que si que hem fet ha estat modificar el nombre d'atributs, ja que hem vist que en teniem que no aportàven informació d'útilitat. 
@@ -715,7 +718,7 @@ Seguidament hem trobat el interval de confiança de la variable *wage* segons la
 Hem realitzat també un contrast d'hipòtesi, on hem pogut concloure que amb un nivell de confiança del 95%, la mitjana dels sous dels treballadors amb pòlissa no és la mateixa que el dels treballadors sense pòlissa contractada, sent la gent amb pòliça la que ingressa més diners.
 
 
-#Bibliografia
+# Bibliografia
 
 [1] Rdocumentation.org. 2020. Wage Function | R Documentation. [online] Available at: <https://www.rdocumentation.org/packages/ISLR/versions/1.2/topics/Wage> [Accessed 7 June 2020].
 
