@@ -712,10 +712,16 @@ Un altre cop com havíem vist a les proves estadístiques, les persones amb un s
 
 # Conclusions
 
-Com hem pogut veure s'han realitzat diferents proves estadístiques sobre el dataset. Hem començat fent un estudi dels valors nuls i extrems per determinar si haviem de fer algun tractament a les tuples del dataset. Hem vist que no feia falta, però el que si que hem fet ha estat modificar el nombre d'atributs, ja que hem vist que en teniem que no aportàven informació d'útilitat. 
-Del anàlisi de correlació hem vist que la variable numérica més rellevant és *logwage*, i la que menys és *year*, el que significa que el registre de salari d'un treballador té més relació amb el salari de la persona que l'edat que té o que l'any en què es va recollir la mostra. 
-Seguidament hem trobat el interval de confiança de la variable *wage* segons la ètnia. Hem observat que els asiàtics i els blancs són els que cobren més. Analitzant el perquè, s'ha observat que va relacionat amb el nivell d'estudis, on també els asiàtics i blancs tenen més estudis. 
-Hem realitzat també un contrast d'hipòtesi, on hem pogut concloure que amb un nivell de confiança del 95%, la mitjana dels sous dels treballadors amb pòlissa no és la mateixa que el dels treballadors sense pòlissa contractada, sent la gent amb pòliça la que ingressa més diners.
+Com hem pogut veure s'han realitzat diferents proves estadístiques sobre el dataset. Hem començat fent un estudi dels valors nuls i extrems per determinar si havíem de fer algun tractament a les tuples del dataset. Hem vist que no feia falta, però el que sí que hem fet, ha estat modificar el nombre d'atributs, ja que hem vist que existia un atribut que no aportava informació rellevant sobre les dades i sobre l'objectiu que ens havíem establert.
+
+De l'anàlisi de correlació hem vist que la variable numérica més rellevant és *logwage*, i la que menys és *year*, el que significa que el registre de salari d'un treballador té més relació amb el salari de la persona que l'edat que té o que l'any en què es va recollir la mostra. 
+
+Seguidament hem trobat l'interval de confiança de la variable *wage* segons l'ètnia. Hem observat que els asiàtics i els blancs són els que cobren més. Analitzant el perquè, segurament influeixen molts factors externs que no es mostren al dataset com podria ser l'entorn familiar, l'accés als estudis, etc., però un tòpic que sembla rellevant és el nivell d'estudis. Aquí s'ha observat com la majoria de registres que es troben en el rang de nivells d'estudis més alts pertanyen a l'ètnia blanca o asiàtica.
+
+A continuació, hem realitzat també un contrast d'hipòtesi, on hem pogut concloure que amb un nivell de confiança del 95%, la mitjana dels sous dels treballadors amb pòlissa no és la mateixa que el dels treballadors sense pòlissa contractada, sent la gent amb pòliça la que ingressa més diners.
+
+Finalment, hem generat models de regressió logística en funció de diverses variables explicatives: *health_ins*, *jobclass* i *age* per estudiar el sou dels treballadors. En aquest cas, hem vist que donats dos treballadors amb les mateixes característiques, però dedicats a sectors diferents (*information* o *îndustrial*), el primer tindrà un sou més alt.
+
 
 
 # Bibliografia
